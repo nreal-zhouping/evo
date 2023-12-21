@@ -247,6 +247,9 @@ def set_aspect_equal(ax: Axes) -> None:
         ax.set_aspect("equal")
         return
 
+    # 设置 axis equal
+    ax.set_box_aspect([1, 1, 1])  # 参数是 x, y, z 方向的缩放比例
+
     xlim = ax.get_xlim3d()
     ylim = ax.get_ylim3d()
     zlim = ax.get_zlim3d()
@@ -406,6 +409,7 @@ def traj(ax: Axes, plot_mode: PlotMode, traj: trajectory.PosePath3D,
                               end_color=color, alpha=alpha)
 
 
+
 def colored_line_collection(
     xyz: np.ndarray, colors, plot_mode: PlotMode = PlotMode.xy,
     linestyles: str = "solid", step: int = 1, alpha: float = 1.
@@ -437,7 +441,11 @@ def traj_colormap(ax: Axes, traj: trajectory.PosePath3D, array: ListOrArray,
                   plot_mode: PlotMode, min_map: float, max_map: float,
                   title: str = "",
                   fig: typing.Optional[mpl.figure.Figure] = None,
-                  plot_start_end_markers: bool = False) -> None:
+                  plot_start_end_markers: bool = False,
+                  plot_x_ticks: float = 0.1,
+                  plot_y_ticks: float = 0.1,
+                  plot_z_ticks: float = 0.1
+                  ) -> None:
     """
     color map a path/trajectory in xyz coordinates according to
     an array of values
@@ -468,6 +476,18 @@ def traj_colormap(ax: Axes, traj: trajectory.PosePath3D, array: ListOrArray,
                     np.amax(traj.positions_xyz[:, 2]))
     if SETTINGS.plot_xyz_realistic:
         set_aspect_equal(ax)
+
+
+    list_x_ticks = ax.get_xticks()
+    ax.set_xticks(np.arange(list_x_ticks[0], list_x_ticks[-1], plot_x_ticks))
+
+    list_y_ticks = ax.get_yticks()
+    ax.set_yticks(np.arange(list_y_ticks[0], list_y_ticks[-1], plot_y_ticks))
+
+    list_z_ticks = ax.get_zticks()
+    ax.set_zticks(np.arange(list_z_ticks[0], list_z_ticks[-1], plot_z_ticks))
+
+
     if fig is None:
         fig = plt.gcf()
     cbar = fig.colorbar(

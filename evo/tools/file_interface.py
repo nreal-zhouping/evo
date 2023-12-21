@@ -211,6 +211,37 @@ def read_euroc_csv_trajectory(file_path) -> PoseTrajectory3D:
     return PoseTrajectory3D(xyz, quat, stamps)
 
 
+def read_optitrack_trajectory_file(file_path) -> PoseTrajectory3D:
+    """
+    parses trajectory file in Optitrack format (timestamp tx ty tz qx qy qz qw)
+    :param file_path: the trajectory file path (or file handle)
+    :return: trajectory.PoseTrajectory3D object
+    """
+    raw_mat = csv_read_matrix(file_path, delim=",", comment_str="#")
+    error_msg = ("Optitrack trajectory files must have 23 entries per row "
+                 "and no trailing delimiter at the end of the rows (space)")
+    if not raw_mat or (len(raw_mat) > 0 and len(raw_mat[0]) != 23):
+        raise FileInterfaceException(error_msg)
+
+    del(raw_mat[0])#去掉csv的第一行header
+
+    try:
+        mat = np.array(raw_mat).astype(float)
+    except ValueError as e:
+        print(e)
+        raise FileInterfaceException(error_msg)
+
+    stamps = mat[:, 1]  # n x 1 #第2列
+    xyz = mat[:, 7:10]  # n x 3
+    quat = mat[:, 3:7]  # n x 4
+    quat = np.roll(quat, 1, axis=1)  # shift 1 column -> w in front column
+    if not hasattr(file_path, 'read'):  # if not file handle
+        logger.debug("Loaded {} stamps and poses from: {}".format(
+            len(stamps), file_path))
+    return PoseTrajectory3D(xyz, quat, stamps)
+
+
+
 def _get_xyz_quat_from_transform_stamped(
         msg) -> typing.Tuple[typing.List[float], typing.List[float]]:
     xyz = [

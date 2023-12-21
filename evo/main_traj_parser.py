@@ -152,4 +152,10 @@ def parser() -> argparse.ArgumentParser:
     bag2_parser.add_argument("--all_topics",
                              help="use all compatible topics in the bag",
                              action="store_true")
+    optitrack_parser = sub_parsers.add_parser(
+        "optitrack",
+        description="%s for optitrack trajectory files - %s" % (basic_desc, lic),
+        parents=[shared_parser])
+    optitrack_parser.add_argument("traj_files",
+                            help="one or multiple trajectory files", nargs='+')
     return main_parser

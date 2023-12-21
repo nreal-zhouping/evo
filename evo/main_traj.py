@@ -109,6 +109,14 @@ def load_trajectories(args):
                     bag, args.ref, cache_tf_tree=True)
         finally:
             bag.close()
+    if args.subcommand == "optitrack":
+        for traj_file in args.traj_files:
+            if traj_file == args.ref:
+                continue
+            trajectories[traj_file] = file_interface.read_optitrack_trajectory_file(
+                traj_file)
+        if args.ref:
+            ref_traj = file_interface.read_optitrack_trajectory_file(args.ref)
     return trajectories, ref_traj
 
 
