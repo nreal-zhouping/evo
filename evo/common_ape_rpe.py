@@ -165,12 +165,6 @@ def plot_result(args: argparse.Namespace, result: Result, traj_ref: PosePath3D,
     if args.plot_colormap_max_percentile is not None:
         args.plot_colormap_max = np.percentile(
             result.np_arrays["error_array"], args.plot_colormap_max_percentile)
-    if args.plot_x_ticks is None:
-        args.plot_x_ticks = 0.1
-    if args.plot_y_ticks is None:
-        args.plot_y_ticks = 0.1
-    if args.plot_z_ticks is None:
-        args.plot_z_ticks = 0.1
 
     plot.traj_colormap(ax, traj_est, result.np_arrays["error_array"],
                        plot_mode, min_map=args.plot_colormap_min,

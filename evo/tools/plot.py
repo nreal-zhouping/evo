@@ -442,9 +442,9 @@ def traj_colormap(ax: Axes, traj: trajectory.PosePath3D, array: ListOrArray,
                   title: str = "",
                   fig: typing.Optional[mpl.figure.Figure] = None,
                   plot_start_end_markers: bool = False,
-                  plot_x_ticks: float = 0.1,
-                  plot_y_ticks: float = 0.1,
-                  plot_z_ticks: float = 0.1
+                  plot_x_ticks: float = None,
+                  plot_y_ticks: float = None,
+                  plot_z_ticks: float = None
                   ) -> None:
     """
     color map a path/trajectory in xyz coordinates according to
@@ -478,15 +478,17 @@ def traj_colormap(ax: Axes, traj: trajectory.PosePath3D, array: ListOrArray,
         set_aspect_equal(ax)
 
 
-    list_x_ticks = ax.get_xticks()
-    ax.set_xticks(np.arange(list_x_ticks[0], list_x_ticks[-1], plot_x_ticks))
+    if not(plot_x_ticks is None):
+        list_x_ticks = ax.get_xticks()
+        ax.set_xticks(np.arange(list_x_ticks[0], list_x_ticks[-1], plot_x_ticks))
 
-    list_y_ticks = ax.get_yticks()
-    ax.set_yticks(np.arange(list_y_ticks[0], list_y_ticks[-1], plot_y_ticks))
+    if not(plot_y_ticks is None):
+        list_y_ticks = ax.get_yticks()
+        ax.set_yticks(np.arange(list_y_ticks[0], list_y_ticks[-1], plot_y_ticks))
 
-    list_z_ticks = ax.get_zticks()
-    ax.set_zticks(np.arange(list_z_ticks[0], list_z_ticks[-1], plot_z_ticks))
-
+    if not(plot_z_ticks is None):
+        list_z_ticks = ax.get_zticks()
+        ax.set_zticks(np.arange(list_z_ticks[0], list_z_ticks[-1], plot_z_ticks))
 
     if fig is None:
         fig = plt.gcf()
